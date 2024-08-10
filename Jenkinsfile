@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-                sh 'mvn -s settings.xml -DskipTests install'
+                sh 'mvn clean install -DskipTests'
             }
             post {
                 success {
@@ -34,14 +34,14 @@ pipeline {
 
         stage('Test'){
             steps {
-                sh 'mvn -s settings.xml test'
+                sh 'mvn test'
             }
 
         }
 
         stage('Checkstyle Analysis'){
             steps {
-                sh 'mvn -s settings.xml checkstyle:checkstyle'
+                sh 'mvn checkstyle:checkstyle'
             }
         }
 
@@ -78,7 +78,7 @@ pipeline {
                 nexusArtifactUploader(
                   nexusVersion: 'nexus3',
                   protocol: 'http',
-                  nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
+                  nexusUrl: "172.31.23.5:8081,
                   groupId: 'QA',
                   version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                   repository: "${RELEASE_REPO}",
