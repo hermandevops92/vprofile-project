@@ -8,7 +8,7 @@ pipeline {
     environment {
         SNAP_REPO = 'vprofile-snapshot'
 		NEXUS_USER = 'admin'
-		NEXUS_PASS = 'admhYjvop-5kemcy-fugwud '
+		NEXUS_PASS = 'hYjvop-5kemcy-fugwud'
 		RELEASE_REPO = 'vprofile-release'
 		CENTRAL_REPO = 'vpro-maven-central'
 		NEXUSIP = '172.31.23.5'
@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-                sh 'mvn clean install -DskipTests'
+                sh 'mvn -s settings.xml -DskipTests install'
             }
             post {
                 success {
@@ -34,14 +34,14 @@ pipeline {
 
         stage('Test'){
             steps {
-                sh 'mvn test'
+                sh 'mvn -s settings.xml test'
             }
 
         }
 
         stage('Checkstyle Analysis'){
             steps {
-                sh 'mvn checkstyle:checkstyle'
+                sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
         }
 
@@ -78,7 +78,7 @@ pipeline {
                 nexusArtifactUploader(
                   nexusVersion: 'nexus3',
                   protocol: 'http',
-                  nexusUrl: "172.31.23.5:8081,
+                  nexusUrl: "172.31.23.5:8081",
                   groupId: 'QA',
                   version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                   repository: "${RELEASE_REPO}",
