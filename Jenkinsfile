@@ -18,14 +18,29 @@ pipeline {
         SONARSERVER = 'sonarserver'
         SONARSCANNER = 'sonarscanner'
 
-
     }
-
-    stages {
+    stages{
         stage ('Build'){
             steps {
-                sh 'mvn -s settings.xml -DskipTests install'
+                sh 'mvn -s settings.xml -Dskiptests install'
+            }
+            post {
+                success {
+                    echo "Now Archiving."
+                    archiveArtifcats artifacts: '**/*.war'
+                }
+            }
+        }
+        stage('Test'){
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Checkstyle Analysis'){
+            steps {
+                sh 'mvn checkstyle:checkstyle'
             }
         }
     }
+
 }
